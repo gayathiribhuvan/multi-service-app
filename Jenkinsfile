@@ -44,12 +44,17 @@ pipeline {
      }
 }
         stage('Quality Gate') {
-             steps {
-                timeout(time: 20, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: false
+            steps {
+                script {
+                    timeout(time: 10, unit: 'MINUTES') {
+                          def qg = waitForQualityGate()
+                          if (qg.status != 'OK') {
+                                error "Pipeline failed due to Quality Gate: ${qg.status}"
                 }
             }
         }
+    }
+}
         stage('Build Docker Image') {
             steps {
                 dir('backend') {
