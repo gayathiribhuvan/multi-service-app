@@ -28,7 +28,28 @@ pipeline {
                 }
             }
         }
-
+        stage('SonarQube Analysis') {
+             steps {
+                 dir('backend') {
+                     withSonarQubeEnv('sonarqube') {
+                            sh '''
+                            sonar-scanner \
+                            -Dsonar.projectKey=devops-project \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://localhost:9000 \
+                            -Dsonar.login=$SONAR_AUTH_TOKEN
+                            '''
+                       }
+                  }
+            }
+        }
+        stage('Quality Gate') {
+             steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 dir('backend') {
