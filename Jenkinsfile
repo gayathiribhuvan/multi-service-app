@@ -9,7 +9,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/gayathiribhuvan/multi-service-app.git'
+                git branch: 'develop', url: 'https://github.com/gayathiribhuvan/multi-service-app.git'
             }
         }
 
