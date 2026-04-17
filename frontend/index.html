@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DevOps Task Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+            margin: 0;
+        }
+
+        h1 {
+            padding: 20px;
+        }
+
+        .container {
+            width: 60%;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            color: black;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+            text-align: left;
+        }
+
+        .done { border-left: 6px solid green; }
+        .progress { border-left: 6px solid orange; }
+        .pending { border-left: 6px solid red; }
+    </style>
+</head>
+
+<body>
+
+<h1>🚀 DevOps Task Dashboard</h1>
+
+<div class="container" id="taskContainer"></div>
+
+<script>
+    fetch('http://localhost:3000/api/tasks')
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('taskContainer');
+
+            data.forEach(task => {
+                const div = document.createElement('div');
+                div.classList.add('card');
+
+                if (task.status === "Done") div.classList.add('done');
+                else if (task.status === "In Progress") div.classList.add('progress');
+                else div.classList.add('pending');
+
+                div.innerHTML = `
+                    <h3>${task.task}</h3>
+                    <p>Status: ${task.status}</p>
+                `;
+
+                container.appendChild(div);
+            });
+        })
+        .catch(err => {
+            document.body.innerHTML += "<p>Error connecting to backend</p>";
+            console.error(err);
+        });
+</script>
+
+</body>
+</html>
