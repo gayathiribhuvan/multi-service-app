@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "gayathiribhuvan/devops-backend:v2"
+        IMAGE_NAME = "gayathirisb/devops-backend:v2"
     }
 
     stages {
