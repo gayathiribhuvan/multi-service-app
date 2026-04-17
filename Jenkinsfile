@@ -31,7 +31,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 dir('backend') {
-                    withSonarQubeEnv('sonarqube') {
+                    withSonarQubeEnv('sonar-local') {
                          sh '''
                          sonar-scanner \
                          -Dsonar.projectKey=devops-project \
@@ -47,14 +47,12 @@ pipeline {
             steps {
                 script {
                     timeout(time: 10, unit: 'MINUTES') {
-                          def qg = waitForQualityGate()
-                          if (qg.status != 'OK') {
-                                error "Pipeline failed due to Quality Gate: ${qg.status}"
-                }
-            }
-        }
-    }
+                          waitForQualityGate abortPipeline: true
+               }
+          }
+     }
 }
+
         stage('Build Docker Image') {
             steps {
                 dir('backend') {
