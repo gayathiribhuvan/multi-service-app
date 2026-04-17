@@ -29,20 +29,20 @@ pipeline {
             }
         }
         stage('SonarQube Analysis') {
-             steps {
-                 dir('backend') {
-                     withSonarQubeEnv('sonarqube') {
-                            sh '''
-                            sonar-scanner \
-                            -Dsonar.projectKey=devops-project \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=http://localhost:9000 \
-                            -Dsonar.login=$SONAR_AUTH_TOKEN
-                            '''
-                       }
-                  }
-            }
-        }
+            steps {
+                dir('backend') {
+                    withSonarQubeEnv('sonarqube') {
+                         sh '''
+                         sonar-scanner \
+                         -Dsonar.projectKey=devops-project \
+                         -Dsonar.sources=. \
+                         -Dsonar.host.url=http://localhost:9000 \
+                         -Dsonar.token=$SONAR_AUTH_TOKEN
+                         '''
+               }
+          }
+     }
+}
         stage('Quality Gate') {
              steps {
                 timeout(time: 2, unit: 'MINUTES') {
