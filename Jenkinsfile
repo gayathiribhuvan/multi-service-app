@@ -36,7 +36,7 @@ pipeline {
                          sonar-scanner \
                          -Dsonar.projectKey=devops-project \
                          -Dsonar.sources=. \
-                         -Dsonar.host.url=http://localhost:9000 \
+                         -Dsonar.host.url=http://192.168.0.160:9000 \
                          -Dsonar.token=$SONAR_AUTH_TOKEN
                          '''
                }
@@ -44,13 +44,17 @@ pipeline {
      }
 }
         stage('Quality Gate') {
-            steps {
-                script {
-                    timeout(time: 10, unit: 'MINUTES') {
-                          waitForQualityGate abortPipeline: true
-               }
-          }
-     }
+    steps {
+        script {
+            timeout(time: 30, unit: 'MINUTES') {
+                def qg = waitForQualityGate()
+                echo "Quality Gate status: ${qg.status}"
+                if (qg.status != 'OK') {
+                    error "Pipeline failed due to Quality Gate"
+                }
+            }
+        }
+    }
 }
 
         stage('Build Docker Image') {
